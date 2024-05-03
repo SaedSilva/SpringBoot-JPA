@@ -1,11 +1,17 @@
 package com.saed.dev.entities;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity // Essa anotação indica que a classe é uma entidade do JPA
+@Table(name = "tb_user") // Essa anotação indica que a classe é uma tabela do banco de dados
 public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L; // Essa constante serve para que os objetos da classe possam ser convertidos para bytes
 
+    @Id // Essa anotação indica que o atributo é uma chave primária
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Essa anotação indica que o atributo é auto incrementável
     private Long id;
     private String name;
     private String email;
