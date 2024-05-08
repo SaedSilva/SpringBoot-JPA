@@ -2,6 +2,7 @@ package com.saed.dev.services;
 
 import com.saed.dev.entities.User;
 import com.saed.dev.repositories.UserRepository;
+import com.saed.dev.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserService {
     }
     public User findById (Long id) {
        Optional<User> user = repository.findById(id); // Retorna um objeto do tipo Optional que pode ou não conter um objeto do tipo User
-       return user.get();
+       return user.orElseThrow(() -> new ResourceNotFoundException(id));
     }
     public User insert(User obj) {
         return repository.save(obj);
