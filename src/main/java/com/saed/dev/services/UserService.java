@@ -2,8 +2,11 @@ package com.saed.dev.services;
 
 import com.saed.dev.entities.User;
 import com.saed.dev.repositories.UserRepository;
+import com.saed.dev.services.exceptions.DatabaseException;
 import com.saed.dev.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,11 +29,21 @@ public class UserService {
         return repository.save(obj);
     }
 
-    public void delete (Long id) {
-        repository.deleteById(id);
+    public void delete(Long id) {
+        Optional<User> user = repository.findById(id);
+        if (user.isPresent()) {
+            try {
+                repository.deleteById(id);
+            } catch (DataIntegrityViolationException e) {
+                throw new DatabaseException(e.getMessage());
+            }
+        } else {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
-    public User update(Long id, User obj) {
+
+        public User update(Long id, User obj) {
         User entity = repository.getReferenceById(id);
         updateData(entity, obj);
         return repository.save(entity);
